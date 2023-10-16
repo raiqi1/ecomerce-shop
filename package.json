@@ -9,11 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@material-tailwind/react": "^2.1.2",
+    "@mui/icons-material": "^5.14.12",
+    "@mui/material": "^5.14.12",
+    "@mui/styled-engine-sc": "^5.14.12",
     "autoprefixer": "10.4.15",
+    "color-name": "^2.0.0",
+    "mongodb": "^6.1.0",
+    "mongoose": "^7.5.3",
     "next": "13.4.15",
     "postcss": "8.4.27",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.3.3"
+    "react-feather": "^2.0.10",
+    "react-icons": "^4.10.1",
+    "remixicon": "^3.5.0",
+    "styled-components": "^6.0.8",
+    "tailwindcss": "3.3.3",
+    "tailwindcss-colorize": "^0.1.5"
   }
 }
