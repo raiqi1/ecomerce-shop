@@ -2,9 +2,9 @@ import HeaderMenu from "@/components/header";
 import ProductDetails from "@/components/productDetails";
 import Product from "@/model/Product";
 import User from "@/model/User";
-import db from "@/utils/db";
 import Head from "next/head";
 import React, { useState } from "react";
+import db from "../../utils/db";
 
 export default function product({ product }) {
   console.log("productOne", product);

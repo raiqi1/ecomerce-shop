@@ -93,15 +93,15 @@ const FilterReview = ({ reviews }) => {
           <div key={product.id} className=" flex p-2 gap-2">
             <div className=" w-6">
               <img
-                src={product.reviewBy.image}
+                src={product?.reviewBy?.image ? product.reviewBy.image : ""}
                 className=" h-6 w-6 rounded-full blur-[0.8px]"
                 alt=""
               />
             </div>
             <div className="">
               <h1>
-                {product.reviewBy.name.slice(0, 1)}***
-                {product.reviewBy.name.slice(product.reviewBy.name.length - 1)}
+                {product?.reviewBy?.name.slice(0, 1)}***
+                {product?.reviewBy?.name.slice(product.reviewBy.name.length - 1)}
               </h1>
               <Rating
                 name={`rating-${product.id}`}

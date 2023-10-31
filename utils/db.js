@@ -14,7 +14,7 @@ async function connectDb() {
     }
     await mongoose.disconnect();
   }
-  const db = await mongoose.connect(process.env.MONGODB_URI, {
+  const db = await mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
@@ -24,7 +24,7 @@ async function connectDb() {
 
 async function disconnectDb() {
   if (connection.isConnected) {
-    if (process.env.NODE_END === "production") {
+    if (process.env.NODE_ENV === "production") {
       await mongoose.disconnect();
       connection.isConnected = false;
     } else {

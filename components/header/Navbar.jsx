@@ -109,16 +109,18 @@ const Navbar = () => {
       <div className=" bg-transparent px-10 flex">
         <div>
           <button>
-          <Link className=" cursor-pointer" href="/browse">
-Browse
-          </Link>
+            <Link className=" cursor-pointer" href="/browse">
+              Browse
+            </Link>
           </button>
         </div>
-        <img
-          src="../../assets/shopee.png"
-          alt=""
-          className=" ml-10 w-36 rounded"
-        />
+        <Link href="/">
+          <img
+            src="../../assets/shopee.png"
+            alt=""
+            className=" ml-10 w-36 rounded"
+          />
+        </Link>
         <div className=" h-10 mt-6 ml-10 flex bg-white w-[65%] rounded-lg ">
           <input
             type="text"
@@ -131,12 +133,14 @@ Browse
             </div>
           </div>
         </div>
-        <div className="md:cursor-pointer group flex flex-col justify-center ml-10 z-10">
-          <span>
-            <LuShoppingCart className=" text-2xl text-white" />
-          </span>
+        <div className="md:cursor-pointer group flex flex-col justify-center ml-10 z-20">
+          <Link href="/cart">
+            <span>
+              <LuShoppingCart className=" text-2xl text-white" />
+            </span>
+          </Link>
           <div className="  absolute top-5 mt-20 left-[58%] hidden group-hover:md:block hover:md:block ">
-            <div className="py-2 absolute ml-[360px] bg-white w-5  h-2 rotate-45 "></div>
+            <div className="py-2 absolute ml-[360px] bg-white w-5 h-2 rotate-45 "></div>
             <div className=" bg-white rounded-sm w-96 h-56 h- absolute mt-1 ">
               <div className=" flex justify-center  place-content-center ">
                 <img

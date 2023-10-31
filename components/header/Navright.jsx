@@ -3,8 +3,12 @@ import { BiSolidNotification } from "react-icons/bi";
 import { FiHelpCircle } from "react-icons/fi";
 import { TfiWorld } from "react-icons/tfi";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Navright = () => {
+  const { data: session } = useSession();
+  console.log(session);
+
   return (
     <>
       <div className="flex gap-3 mt-3">
@@ -30,8 +34,12 @@ const Navright = () => {
                 />
               </div>
               <div className=" grid grid-cols-2 text-center bg-slate-400 w-40 place-content-center self-center align-middle h-full mt-20 rounded-lg ">
-                <h1 className=" hover:bg-blue-gray-300 h-[30px] rounded-sm">Daftar</h1>
-                <h1 className=" hover:bg-blue-gray-300 h-[30px] rounded-sm">Login</h1>
+                <h1 className=" hover:bg-blue-gray-300 h-[30px] rounded-sm">
+                  Daftar
+                </h1>
+                <h1 className=" hover:bg-blue-gray-300 h-[30px] rounded-sm">
+                  Login
+                </h1>
               </div>
             </div>
           </div>
@@ -73,7 +81,19 @@ const Navright = () => {
         <div className="flex gap-3 top-5 ml-2">
           <h1 className="text-sm text-white ">Daftar</h1>
           <div className="w-[1px] h-[14px] mt-[3px] bg-slate-200" />
-          <h1 className="text-sm  text-white">Login</h1>
+          {session ? (
+            <div className="flex cursor-pointer">
+              <h1 className="text-sm text-white ">Hi, {session.user.name}</h1>
+              <span onClick={() => signOut()}>SignOut</span>
+            </div>
+          ) : (
+            <h1
+              onClick={() => signIn()}
+              className="text-sm cursor-pointer text-white"
+            >
+              Login
+            </h1>
+          )}
         </div>
       </div>
     </>

@@ -3,9 +3,13 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import FilterReview from "./FilterReview";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, updateCart } from "@/store/cartSlice";
 
 export default function ProductDetails({ product, activeImage, setActiveImg }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const imgProd = product.images.map((p) => {
     return p;
   });
@@ -13,16 +17,99 @@ export default function ProductDetails({ product, activeImage, setActiveImg }) {
   const [active, setActive] = useState(0);
   const [size, setSize] = useState(router.query.size);
   const [qty, setQty] = useState(1);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const { cart } = useSelector((state) => ({ ...state }));
 
   const imgColor = product.colors;
   console.log("imgColor", imgColor);
 
   useEffect(() => {
     setSize("");
+    setQty(1);
   }, [router.query.style]);
 
+  useEffect(() => {
+    if (qty > product.quantity) {
+      setQty(product.quantity);
+    }
+  }, [router.query.size]);
+
+  useEffect(() => {
+    if (setSuccess) {
+      setTimeout(() => {
+        setError("");
+      }, 2000);
+    }
+  }, [success]);
+
+  useEffect(() => {
+    if (setError) {
+      setTimeout(() => {
+        setSuccess("");
+      }, 2000);
+    }
+  }, [error]);
+  // const handleCart = async () => {
+  //   const { data } = await axios.get(
+  //     `/api/product/${product.id}?style=${product.style}&size=${router.query.size}`
+  //   );
+  //   console.log("data", data);
+  //   let _uid = `${data._id}_${product.style}_${router.query.size}`;
+  //   console.log("_uid", _uid);
+  //   let exist = cart.cartItems.find((p) => p._uid === _uid);
+  //   console.log("exist", exist);
+  //   dispath(addToCart({ ...data, qty, size: data.size, _uid }));
+  // };
+
+  const addToCartHandler = async () => {
+    if (!router.query.size) {
+      setError("Please Select a size");
+      return;
+    }
+    const { data } = await axios.get(
+      `/api/product/${product._id}?style=${product.style}&size=${router.query.size}`
+    );
+    console.log("data", data);
+    if (qty > data.quantity) {
+      setError(
+        "The Quantity you have choosed is more than in stock. Try and lower the Qty"
+      );
+    } else if (data.quantity < 1) {
+      setError("This Product is out of stock.");
+      return;
+    } else {
+      let _uid = `${data._id}_${product.style}_${router.query.size}`;
+      console.log("_uid", _uid);
+      let exist = cart.cartItems.find((p) => p._uid === _uid);
+      console.log("exist", exist);
+      if (exist) {
+        let newCart = cart.cartItems.map((p) => {
+          if (p._uid == exist._uid) {
+            return { ...p, qty: qty };
+          }
+          return p;
+        });
+        dispatch(updateCart(newCart));
+        setError("");
+        setSuccess("Product Updated");
+      } else {
+        dispatch(
+          addToCart({
+            ...data,
+            qty,
+            size: data.size,
+            _uid,
+          })
+        );
+        setError("");
+        setSuccess("Product Added to Cart");
+      }
+    }
+  };
+
   return (
-    <div className=" ">
+    <div className="">
       <div className=" mt-6 rounded p-3 bg-white grid grid-cols-3 gap-[300px] w-[1200px]">
         <div className=" w-[800px]">
           <div className=" w-[600px]">
@@ -32,8 +119,8 @@ export default function ProductDetails({ product, activeImage, setActiveImg }) {
               alt=""
             />
           </div>
-          <div className="flex gap-2 mt-1">
-            {imgProd.map((p, i) => (
+          <div className="flex gap-2 mt-1 w-96">
+            {imgProd?.map((p, i) => (
               <div>
                 <img
                   className={`${"h-14 w-[68.3px] hover:outline outline-red-400 "}${
@@ -120,7 +207,7 @@ export default function ProductDetails({ product, activeImage, setActiveImg }) {
               <div className=" mr-10">
                 <h1>Warna</h1>
               </div>
-              {product.colors.map((p, i) => (
+              {product?.colors.map((p, i) => (
                 <div
                   className={`${"rounded-sm"} ${
                     i == router.query.style
@@ -133,6 +220,7 @@ export default function ProductDetails({ product, activeImage, setActiveImg }) {
                     className=" flex"
                     href={`/product/${product.slug}?style=${i}`}
                     scroll={false}
+                    passHref
                   >
                     <div className="flex p-1 bg-gray-200">
                       <img src={p?.image} alt="" className="h-6 rounded-md" />
@@ -150,12 +238,13 @@ export default function ProductDetails({ product, activeImage, setActiveImg }) {
             <div className=" mr-10">
               <h1>Ukuran</h1>
             </div>
-            {product.sizes.map((s, i) => (
+            {product?.sizes.map((s, i) => (
               <div className=" p-1 bg-gray-200 rounded-md" key={i}>
                 <Link
                   href={`/product/${product.slug}?style=${router.query.style}&size=${i}`}
                   scroll={false}
                   className=""
+                  passHref
                 >
                   <div
                     className={`${
@@ -200,10 +289,25 @@ export default function ProductDetails({ product, activeImage, setActiveImg }) {
               </button>
             </div>
           </div>
+          <div className=" bg-orange-600 w-24 rounded flex justify-center p-1 hover:bg-lime-400">
+            <button className="text-white" onClick={() => addToCartHandler()}>
+              Add To Cart
+            </button>
+          </div>
+          {error && (
+            <h1 className=" text-xs text-red-500 flex flex-col justify-center">
+              {error}
+            </h1>
+          )}
+          {success && (
+            <h1 className=" text-xs text-green-500 flex flex-col justify-center">
+              {success}
+            </h1>
+          )}
         </div>
       </div>
       <div className=" mt-3 bg-white">
-        <FilterReview reviews={product.reviews} />
+        <FilterReview reviews={product?.reviews} />
       </div>
     </div>
   );
